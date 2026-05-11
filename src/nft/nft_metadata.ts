@@ -1,55 +1,55 @@
 import "dotenv/config";
-import { createSignerFromKeypair, signerIdentity } from "@metaplex-foundation/umi";
+import {
+  createSignerFromKeypair,
+  signerIdentity,
+} from "@metaplex-foundation/umi";
 import wallet from "../../devnet-wallet.json";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
+import { uploadImage } from "./nft_image";
 
-const umi = createUmi(process.env.SOLANA_RPC_URL ?? "https://api.devnet.solana.com");
+const umi = createUmi(
+  process.env.SOLANA_RPC_URL ?? "https://api.devnet.solana.com",
+);
 
 const keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(wallet));
 const signer = createSignerFromKeypair(umi, keypair);
 
-
 umi.use(
-    irysUploader({
-        address: "https://devnet.irys.xyz/",
-    })
+  irysUploader({
+    address: "https://devnet.irys.xyz/",
+  }),
 );
 
 umi.use(signerIdentity(signer));
 
-(async () => {
-    try {
-        //change the image uri to your image uri obtained from nft_image.ts
-        const image = "https://gateway.irys.xyz/8rbpZfo6zYR8XQnWKay5JP6U2Pv2bfUqHoL8AM9y55z1";
+export const addImageMetadata = async () => {
+  try {
+    const image = await uploadImage();
 
-        //json scheme : https://www.metaplex.com/docs/smart-contracts/core/json-schema
-        //change the metadata
-        const metadata = {
-            name: "Meow",
-            description: "CAT",
-            image,
-            attributes: [{ trait_type: "Rarity", value: "Legendary" }],
+    if (!image) throw Error("Failed to upload image");
 
-            
-            properties: {
-                files: [
-                    {
-                        type: "image/jpeg",  
-                        uri: image,        
-                    },
-                ],
-                category: "image",      
-            },
+    const metadata = {
+      name: "Smug",
+      description: "Weird smug",
+      image,
+      attributes: [{ trait_type: "Rarity", value: "Legendary" }],
 
-        };
+      properties: {
+        files: [
+          {
+            type: "image/jpeg",
+            uri: image,
+          },
+        ],
+        category: "image",
+      },
+    };
 
-        const myUri = await umi.uploader.uploadJson(metadata);
-        console.log(`metadata uri: ${myUri} `);
-    }
-    catch (error) {
-        console.log("error", error);
-    }
-})()
-
-
+    const jsonUri = await umi.uploader.uploadJson(metadata);
+    console.log(`metadata uri: ${jsonUri} `);
+    return jsonUri;
+  } catch (error) {
+    console.log("error", error);
+  }
+};

@@ -1,58 +1,70 @@
 import "dotenv/config";
-import { createSignerFromKeypair, publicKey, signerIdentity } from "@metaplex-foundation/umi";
+import {
+  createSignerFromKeypair,
+  publicKey,
+  signerIdentity,
+} from "@metaplex-foundation/umi";
 import wallet from "../../devnet-wallet.json";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { createMetadataAccountV3, CreateMetadataAccountV3InstructionAccounts, CreateMetadataAccountV3InstructionArgs, DataV2Args } from "@metaplex-foundation/mpl-token-metadata";
-import bs58 from "bs58"
+import {
+  createMetadataAccountV3,
+  CreateMetadataAccountV3InstructionAccounts,
+  CreateMetadataAccountV3InstructionArgs,
+  DataV2Args,
+} from "@metaplex-foundation/mpl-token-metadata";
+import bs58 from "bs58";
 
-//paste your mint address got from spl_init.ts
-const mint = publicKey("Hbf5fkVGzcxqwdhHbdMjD5UBTZ6LuGvx689UnAEoUfy9");
+import { initiateSplToken } from "./spl_init";
 
-const umi = createUmi(process.env.SOLANA_RPC_URL ?? "https://api.devnet.solana.com");
+const umi = createUmi(
+  process.env.SOLANA_RPC_URL ?? "https://api.devnet.solana.com",
+);
 
 const keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(wallet));
 const signer = createSignerFromKeypair(umi, keypair);
 
 umi.use(signerIdentity(signer));
 
+export const addMetadata = async () => {
+  try {
+    const mintAddress = await initiateSplToken();
 
-(async () => {
-    try {
-
-        const accounts : CreateMetadataAccountV3InstructionAccounts = {
-            mint,
-            mintAuthority: signer
-        }
-
-        //change the metadata
-        const data: DataV2Args = {
-            name: "Cat coin",
-            symbol: "CAT",
-            uri: "https://arweave.net/123456",
-            sellerFeeBasisPoints: 1,
-            creators: null,
-            collection: null,
-            uses: null
-        }
-
-        const args: CreateMetadataAccountV3InstructionArgs = {
-            data,
-            isMutable: true,
-            collectionDetails: null
-        }
-        const tx = createMetadataAccountV3(umi, {
-            ...accounts,
-            ...args
-        })
-
-        const result = await tx.sendAndConfirm(umi);
-        console.log("signature: ",bs58.encode(Buffer.from(result.signature)));
+    if (!mintAddress) {
+      throw Error("Failed to create a mint");
     }
-    catch (error) {
-        console.log("error",error);
-    }
-})()
 
-//43ttSnN9qaVi8TDcWwBZo5mUbfKDXY8d1N7exdJojJxV7qjKuwXoEh7qASXbFU4QFrAEFzZvcmWpRch434hSVNLN
+    const mint = publicKey(mintAddress);
 
-//4Zt5hvNGgyPwAEnAzBGkyx3CUx6YNKUqw41UqNRqWnVYNykfs3NKc7vayM376R7amQnwxWiLuhMLUdRx3ALq6Tsa
+    const accounts: CreateMetadataAccountV3InstructionAccounts = {
+      mint,
+      mintAuthority: signer,
+    };
+
+    const data: DataV2Args = {
+      name: "BANGA coin",
+      symbol: "BANG",
+      uri: "https://arweave.net/123456",
+      sellerFeeBasisPoints: 1,
+      creators: null,
+      collection: null,
+      uses: null,
+    };
+
+    const args: CreateMetadataAccountV3InstructionArgs = {
+      data,
+      isMutable: true,
+      collectionDetails: null,
+    };
+    const tx = createMetadataAccountV3(umi, {
+      ...accounts,
+      ...args,
+    });
+
+    const result = await tx.sendAndConfirm(umi);
+    console.log("signature: ", bs58.encode(Buffer.from(result.signature)));
+
+    return mintAddress;
+  } catch (error) {
+    console.log("error", error);
+  }
+};
