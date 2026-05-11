@@ -14,6 +14,7 @@ import {
   setTransactionMessageLifetimeUsingBlockhash,
   signTransactionMessageWithSigners,
 } from "@solana/kit";
+import { publicKey } from "@metaplex-foundation/umi";
 import wallet from "../../devnet-wallet.json";
 import {
   findAssociatedTokenPda,
@@ -33,9 +34,11 @@ const rpcSubscriptions = createSolanaRpcSubscriptions(
 
 (async (to: Address) => {
   try {
-    const mint = await mintSpl();
+    const mintSigner = await mintSpl();
 
-    if (!mint) throw Error("Failed to mint SPL token");
+    if (!mintSigner) throw Error("Failed to mint SPL token");
+
+    const mint = publicKey(mintSigner.address);
 
     const signer = await createKeyPairSignerFromBytes(new Uint8Array(wallet));
     const sendAndConfirm = sendAndConfirmTransactionFactory({

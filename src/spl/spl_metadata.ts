@@ -1,6 +1,7 @@
 import "dotenv/config";
 import {
   createSignerFromKeypair,
+  PublicKey,
   publicKey,
   signerIdentity,
 } from "@metaplex-foundation/umi";
@@ -15,10 +16,13 @@ import {
 import bs58 from "bs58";
 
 import { initiateSplToken } from "./spl_init";
+import { Address, createSolanaRpc } from "@solana/kit";
 
 const umi = createUmi(
   process.env.SOLANA_RPC_URL ?? "https://api.devnet.solana.com",
 );
+
+const rpc = createSolanaRpc("https://api.devnet.solana.com");
 
 const keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(wallet));
 const signer = createSignerFromKeypair(umi, keypair);
@@ -33,7 +37,15 @@ export const addMetadata = async () => {
       throw Error("Failed to create a mint");
     }
 
-    const mint = publicKey(mintAddress);
+    const mint = publicKey(mintAddress.address);
+
+    const mintInfo = await rpc
+      .getAccountInfo(mintAddress.address, { encoding: "base64" })
+      .send();
+
+    if (!mintInfo.value) {
+      throw new Error(`Mint account ${mintAddress.address} not found on-chain`);
+    }
 
     const accounts: CreateMetadataAccountV3InstructionAccounts = {
       mint,

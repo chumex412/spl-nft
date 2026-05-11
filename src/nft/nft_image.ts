@@ -27,7 +27,7 @@ umi.use(signerIdentity(signer));
 
 export const uploadImage = async () => {
   try {
-    const image = await readFile("./weird-smog.jpg");
+    const image = await readFile("../../weird-smog.jpg");
 
     const file = createGenericFile(image, "weird-smug", {
       contentType: "image/jpeg",

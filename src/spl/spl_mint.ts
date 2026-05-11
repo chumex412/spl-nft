@@ -22,6 +22,7 @@ import {
   TOKEN_PROGRAM_ADDRESS,
 } from "@solana-program/token";
 import { addMetadata } from "./spl_metadata";
+import { publicKey } from "@metaplex-foundation/umi";
 
 const rpc = createSolanaRpc("https://api.devnet.solana.com");
 
@@ -33,11 +34,13 @@ const token_decimals = 1_000_000n;
 
 export const mintSpl = async () => {
   try {
-    const mint = await addMetadata();
+    const mintSigner = await addMetadata();
 
-    if (!mint) {
-      throw Error("Failed to create a mint");
+    if (!mintSigner) {
+      throw Error("Failed to add mint metadata");
     }
+
+    const mint = publicKey(mintSigner.address);
     const signer = await createKeyPairSignerFromBytes(new Uint8Array(wallet));
 
     const [ata] = await findAssociatedTokenPda({
@@ -87,11 +90,11 @@ export const mintSpl = async () => {
       rpcSubscriptions,
     });
 
-    await sendAndConfirm(signedTx, { commitment: "confirmed" });
+    await sendAndConfirm(signedTx, { commitment: "finalized" });
 
     console.log(`mint txid: ${signature}`);
 
-    return mint;
+    return mintSigner;
   } catch (error) {
     console.log(error);
   }

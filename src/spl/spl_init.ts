@@ -68,6 +68,7 @@ export const initiateSplToken = async () => {
           mint: mint.address,
           decimals: 6,
           mintAuthority: signer.address,
+          freezeAuthority: signer.address,
         }),
       ],
       msgWithLiftime,
@@ -79,10 +80,10 @@ export const initiateSplToken = async () => {
 
     const signature = getSignatureFromTransaction(signedTx);
 
-    await sendAndConfirm(signedTx, { commitment: "confirmed" });
+    await sendAndConfirm(signedTx, { commitment: "finalized" });
 
     console.log(`mint address: ${mint.address}.`);
-    return mint.address;
+    return mint;
   } catch (error) {
     console.log(error);
     return null;

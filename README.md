@@ -1,6 +1,16 @@
-# NFT Creation and Mint
+# SPL Token Creation, Mint and Transfer/NFT Creation and Mint
 
-A simple task to create and mint an NFT asset with Metaplex. It implements basic features where users can do the following:
+A simple task to create, mint and transfer SPL Token. This project also creates and mints a NFT assets with Metaplex core plugin. It implements basic features where users can do the following:
+
+1. For SPL Token
+
+- Initialize an spl token and updates it's metadata.
+
+- Mint the spl token using the mint address from the initial process.
+
+- Transfer the token to another wallet address.
+
+2. For NFT
 
 - Upload an image file via `umi` to generate an image `uri`.
 
@@ -26,6 +36,7 @@ A simple task to create and mint an NFT asset with Metaplex. It implements basic
 - Install the dependencies by running `npm install` in the CLI.
 - Generate a wallet.
 - Create a `devnet-wallet.json` as a container for your wallet details.
+- Run the command `npm run spl_transfer` to create a mint, create an associated token account, move the minted token to the account and transfer the minted token to a provided recipient account.
 - Run the command `npm run nft-mint` to generate image uri, generate metadata uri, create and mint an NFT.
 
 ### Prerequisite
@@ -35,23 +46,13 @@ A simple task to create and mint an NFT asset with Metaplex. It implements basic
 - MPL Core Plugins
 - TypeScript
 
-### Challenge
-
-The approach used to trade the minted NFT presented a few challenges and limitations, primarily centered around trust and efficiency. Since the trade was conducted directly between two parties, there was no reliable mechanism to verify the authenticity or enforce the agreed terms of the exchange. Either party could choose not to honor the agreement, potentially resulting in losses for the other.
-
-Additionally, this method does not scale efficiently. Coordinating trades with multiple parties or trading multiple assets becomes cumbersome, as there is no structured system in place to facilitate secure and seamless transactions.
-
-### Solution
-
-- A solution to the trade challenges would be to implement an Excrow program that handles the peer-to-peer transactions.
-
-- As for the limitation, this can be potentially resolved by implementing a program that for a Marketplace model. This contract achieves the following:
-  - Ensures sellers can list their minted assets.
-
-  - Buyers can browse and purchase.
-
 ### Screenshot
 
-![A screenshot of the smg-emoji Minted NFT](https://res.cloudinary.com/da8vqkdmt/image/upload/v1770498098/Screen_Shot_2026-02-07_at_9.57.54_PM_iuttpj.png)
+![A screenshot of the Minted and Transferred SPL Token](https://res.cloudinary.com/da8vqkdmt/image/upload/v1778510405/Screen_Shot_2026-05-11_at_3.35.05_PM_pxv324.png)
+![A screenshot of the smg-emoji Minted NFT](https://res.cloudinary.com/da8vqkdmt/image/upload/v1778510405/Screen_Shot_2026-05-11_at_3.37.44_PM_jc5mwn.png)
 
 ### Miscellanous
+
+- SPL Token Mint Transaction ID: 2B4AvfnEze5bWWKM8RiGJs76uBU5kemC6asnnu6M8mngmAErEtu5cof3TRHCjdzMKbCehfbaYS7RwQ2EUaSWUTEA
+
+- Mint Asset: 7uDpoqLAi79GpMtGRkhQATsoeAWqp7bP32WVfpmjziBw
