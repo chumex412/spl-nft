@@ -21,7 +21,7 @@ umi.use(signerIdentity(signer));
 
 umi.use(mplCore());
 
-(async () => {
+export const mintNft = async () => {
   try {
     const uri = await addImageMetadata();
 
@@ -37,7 +37,9 @@ umi.use(mplCore());
     const signature = base58.deserialize(tx.signature)[0];
 
     console.log(`signature ${signature} , asset : ${asset.publicKey}`);
+
+    return asset;
   } catch (e) {
     console.log(`errior ${e}`);
   }
-})();
+};
