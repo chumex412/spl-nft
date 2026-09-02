@@ -4,9 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --testTimeout=30000",
+    "test:watch": "jest --watch --testTimeout=30000",
+    "test:coverage": "jest --coverage",
+    "test:integration": "jest src/spl/__tests__/spl.integration.test.ts --runInBand --detectOpenHandles --testTimeout=60000",
+    "test:integration:watch": "jest src/spl/__tests__/spl.integration.test.ts --watch --testTimeout=60000",
     "spl:transfer": "npx ts-node src/spl/spl_transfer.ts",
-    "nft:mint": "npx ts-node src/nft/nft_mint.ts"
+    "nft:transfer": "npx ts-node src/nft/nft_transfer.ts",
+    "nft:burn": "npx ts-node src/nft/nft_burn.ts"
   },
   "keywords": [],
   "author": "",
@@ -25,7 +30,10 @@
     "dotenv": "^16.5.0"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/node": "^25.6.0",
+    "jest": "^30.5.1",
+    "ts-jest": "^29.4.12",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
   }

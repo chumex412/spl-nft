@@ -25,6 +25,7 @@ A simple task to create, mint and transfer SPL Token. This project also creates 
   - [Prerequisite](#Prerequisite)
   - [The challenge](#Challenge)
   - [Solution](#Solution)
+  - [Integrated Test](#Test)
   - [Screenshot](#Screenshot)
   - [Micellaneous](#Miscellanous)
 
@@ -37,7 +38,8 @@ A simple task to create, mint and transfer SPL Token. This project also creates 
 - Generate a wallet.
 - Create a `devnet-wallet.json` as a container for your wallet details.
 - Run the command `npm run spl_transfer` to create a mint, create an associated token account, move the minted token to the account and transfer the minted token to a provided recipient account.
-- Run the command `npm run nft-mint` to generate image uri, generate metadata uri, create and mint an NFT.
+- Run the command `npm run nft:transfer` to generate image uri, generate metadata uri, create and mint an NFT and transfer minted token.
+- Run the command `npm run nft:burn` to generate image uri, generate metadata uri, create and mint an NFT and burn minted token.
 
 ### Prerequisite
 
@@ -45,11 +47,37 @@ A simple task to create, mint and transfer SPL Token. This project also creates 
 - Solana Kit
 - MPL Core Plugins
 - TypeScript
+- Jest
+
+### Integration Tests
+
+Located in `src/spl/__tests__/*.integration.test.ts`
+
+- **spl.integration.test.ts**: Real Solana testnet tests for actual mint and transfer operations
+
+These tests **require**:
+
+- SOL on Solana testnet (request from [faucet](https://solfaucet.com/))
+- Network connectivity
+- Valid wallet in `devnet-wallet.json`
+
+**Run integration tests:**
+
+```bash
+npm run test:integration
+```
+
+Watch mode for development:
+
+```bash
+npm run test:integration:watch
+```
 
 ### Screenshot
 
 ![A screenshot of the Minted and Transferred SPL Token](https://res.cloudinary.com/da8vqkdmt/image/upload/v1778510405/Screen_Shot_2026-05-11_at_3.35.05_PM_pxv324.png)
 ![A screenshot of the smg-emoji Minted NFT](https://res.cloudinary.com/da8vqkdmt/image/upload/v1778510405/Screen_Shot_2026-05-11_at_3.37.44_PM_jc5mwn.png)
+![Test covering spl token creation, minting, and transfer](https://res.cloudinary.com/da8vqkdmt/image/upload/v1788311046/Screen_Shot_2026-09-02_at_1.46.37_AM_zbuvjw.png)
 
 ### Miscellanous
 
